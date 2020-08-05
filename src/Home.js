@@ -24,8 +24,9 @@ const Home = () => {
         initialData = initialData.splice(maxNumberItem - 30, maxNumberItem);
         promiseList = initialData.map(id => axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(response => response.data));
         storyList = await Promise.all(promiseList);
-
         storyList = sortByDate(storyList);
+
+        console.log(storyList);
 
         setIdList(data);
         setStories(storyList);
@@ -34,19 +35,19 @@ const Home = () => {
   }, [pageNumber]);
 
   const sortByDate = list => {
-    return list.sort((prev, next) => prev.time - next.time);
+    return list.sort((prev, next) => next.time - prev.time);
   };
 
   const renderStories = () => {
     return stories.map((story, key) => {
-      console.log(story.url);
+      // const test = story.url ? .then : "url is not available";
       return (
         <Fragment key={key}>
           type: {story.type}
           <br />
           title: {story.title}
           <br />
-          date : {moment(story.time).format("YYYY-MM-DD")}
+          date : {moment.unix(story.time).format()}
           <br />
           url:
         </Fragment>
