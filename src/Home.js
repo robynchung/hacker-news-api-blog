@@ -9,8 +9,10 @@ const Home = () => {
   const [idList, setIdList] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [stories, setStories] = useState([]);
+  const [spinnerLoading, setSpinnerLoading] = useState(false);
 
   useEffect(() => {
+    setSpinnerLoading(true);
     axios
       .get("https://hacker-news.firebaseio.com/v0/topstories.json")
       .then(response => response.data)
@@ -24,18 +26,37 @@ const Home = () => {
         initialData = initialData.splice(maxNumberItem - 30, maxNumberItem);
         promiseList = initialData.map(id => axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(response => response.data));
         storyList = await Promise.all(promiseList);
+        storyList = await getMetaObjectByUrl(storyList);
         storyList = sortByDate(storyList);
 
-        console.log(storyList);
+        // console.log(storyList);
 
         setIdList(data);
         setStories(storyList);
+        setSpinnerLoading(false);
       })
       .catch(error => setErrorMessage(error.message));
   }, [pageNumber]);
 
   const sortByDate = list => {
     return list.sort((prev, next) => next.time - prev.time);
+  };
+
+  const getMetaObjectByUrl = async storyList => {
+    const addedMetaDataList = await Promise.all(
+      storyList.map(async story => {
+        const metaData = await grabity
+          .grab(story.url)
+          .then(response => {
+            return response;
+          })
+          .catch(error => error.message);
+
+        return { ...story, metaData };
+      })
+    );
+
+    return addedMetaDataList;
   };
 
   const renderStories = () => {
@@ -49,7 +70,8 @@ const Home = () => {
           <br />
           date : {moment.unix(story.time).format()}
           <br />
-          url:
+          url: {story.metaData && typeof story.metaData === "object" ? story.url : story.metaData}
+          <br />
         </Fragment>
       );
     });
@@ -58,6 +80,7 @@ const Home = () => {
   return (
     <div>
       <ul>{renderStories()}</ul>
+      <h1>{spinnerLoading ? "spinnerLoading" : null}</h1>
       <button onClick={() => setPageNumber(pageNumber > 0 ? pageNumber - 1 : 0)}>prev</button>
       <button onClick={() => setPageNumber(pageNumber < idList.length ? pageNumber + 1 : idList.length)}>next</button>
 
