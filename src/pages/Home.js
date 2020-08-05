@@ -1,10 +1,14 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
-import ReactDOM from "react-dom";
 import axios from "axios";
 import grabity from "grabity";
 import moment from "moment";
 
+import Container from "../layouts/Container";
+
+import { numOfBlog } from "../constants";
+
 const Home = () => {
+  const scrollRef = useRef();
   const [errorMessage, setErrorMessage] = useState("");
   const [idList, setIdList] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -13,11 +17,13 @@ const Home = () => {
 
   useEffect(() => {
     setSpinnerLoading(true);
+    scrollRef.current.scrollIntoView({ behavior: "smooth" });
+
     axios
       .get("https://hacker-news.firebaseio.com/v0/topstories.json")
       .then(response => response.data)
       .then(async data => {
-        const maxNumberItem = pageNumber * 30;
+        const maxNumberItem = pageNumber * numOfBlog;
 
         let initialData = [...data];
         let promiseList = [];
@@ -28,8 +34,6 @@ const Home = () => {
         storyList = await Promise.all(promiseList);
         storyList = await getMetaObjectByUrl(storyList);
         storyList = sortByDate(storyList);
-
-        // console.log(storyList);
 
         setIdList(data);
         setStories(storyList);
@@ -61,7 +65,6 @@ const Home = () => {
 
   const renderStories = () => {
     return stories.map((story, key) => {
-      // const test = story.url ? .then : "url is not available";
       return (
         <Fragment key={key}>
           type: {story.type}
@@ -77,16 +80,18 @@ const Home = () => {
     });
   };
 
+  console.log(scrollRef);
+
   return (
-    <div>
+    <Container>
       <ul>{renderStories()}</ul>
       <h1>{spinnerLoading ? "spinnerLoading" : null}</h1>
       <button onClick={() => setPageNumber(pageNumber > 0 ? pageNumber - 1 : 0)}>prev</button>
       <button onClick={() => setPageNumber(pageNumber < idList.length ? pageNumber + 1 : idList.length)}>next</button>
 
       <div>{errorMessage ? errorMessage : null}</div>
-      {/* <div ref={scrollRef}>ref position</div> */}
-    </div>
+      <div ref={scrollRef}>ref position</div>
+    </Container>
   );
 };
 
