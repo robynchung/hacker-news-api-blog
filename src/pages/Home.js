@@ -81,7 +81,7 @@ const Home = () => {
     const addedMetaDataList = await Promise.all(
       storyList.map(async story => {
         const metaData = await grabity
-          .grab(story.url)
+          .grab(story?.url)
           .then(response => {
             return response;
           })
