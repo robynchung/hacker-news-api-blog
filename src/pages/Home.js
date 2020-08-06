@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import grabity from "grabity";
@@ -20,6 +21,18 @@ const Home = () => {
   const [hasMore, setHasMore] = useState(false);
   const [searchText, setSearchText] = useState("");
 
+  const sortByDate = list => {
+    return list.sort((prev, next) => next.time - prev.time);
+  };
+
+  const setNumberOfList = useCallback((storyList, numItem) => {
+    let stories = [...storyList].splice(0, numItem);
+    stories = sortByDate(stories);
+
+    setStories(stories);
+    setLoading(false);
+  });
+
   const lastArticleRef = useCallback(
     node => {
       if (loading) return;
@@ -28,47 +41,41 @@ const Home = () => {
       setHasMore(totalStories.length - stories.length * pageNumber > 0);
 
       observer.current = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && hasMore) {
+        if (entries[0].isIntersecting && hasMore && stories.length > 10) {
+          const maxNumberItem = pageNumber * numOfBlog;
+          setLoading(true);
           setPageNumber(prevPageNumber => prevPageNumber + 1);
+          setNumberOfList(totalStories, maxNumberItem);
         }
       });
 
       if (node) observer.current.observe(node);
     },
-    [loading, totalStories.length, stories.length, pageNumber, hasMore]
+    [loading, totalStories, stories.length, pageNumber, hasMore, setNumberOfList]
   );
 
   useEffect(() => {
     setLoading(true);
 
+    const maxNumberItem = 1 * numOfBlog;
     let promiseList = [];
     let storyList = [];
-    let stories = [];
 
     axios
       .get("https://hacker-news.firebaseio.com/v0/newstories.json")
       .then(response => response.data)
       .then(async data => {
-        const maxNumberItem = pageNumber * numOfBlog;
-
         let initialData = [...data];
 
         promiseList = initialData.map(id => axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(response => response.data));
         storyList = await Promise.all(promiseList);
         storyList = await getMetaObjectByUrl(storyList);
-        storyList = sortByDate(storyList);
 
-        stories = storyList.splice(0, maxNumberItem);
         setTotalStoryList(storyList);
-        setStories(stories);
-        setLoading(false);
+        setNumberOfList(storyList, maxNumberItem);
       })
       .catch(error => setErrorMessage(error.message));
-  }, [pageNumber]);
-
-  const sortByDate = list => {
-    return list.sort((prev, next) => next.time - prev.time);
-  };
+  }, []);
 
   const getMetaObjectByUrl = async storyList => {
     const addedMetaDataList = await Promise.all(
@@ -91,6 +98,10 @@ const Home = () => {
     setSearchText(value);
     setLoading(true);
     setStories([]);
+
+    if (!searchText) {
+      setNumberOfList(totalStories, 1 * numOfBlog);
+    }
 
     const searchedStories = totalStories.filter(story => {
       if (searchText && story["title"].includes(value)) {
