@@ -1,13 +1,5 @@
 import React from "react";
-import styled from "styled-components";
-
-const LoadingWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  width: 100%;
-`;
+import { LoadingWrapper } from "../layouts/Loading";
 
 const Loading = ({ loading }) => {
   if (loading)
