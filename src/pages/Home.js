@@ -104,7 +104,7 @@ const Home = () => {
     }
 
     const searchedStories = totalStories.filter(story => {
-      if (searchText && story["title"].toLowerCase().includes(value.toLowerCase())) {
+      if (searchText && story?.title.toLowerCase().includes(value.toLowerCase())) {
         return story;
       }
 
