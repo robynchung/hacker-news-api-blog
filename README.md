@@ -1,6 +1,5 @@
 # Hacker news API blog demo
 
----
 
 - React Hook
 - Styled component
