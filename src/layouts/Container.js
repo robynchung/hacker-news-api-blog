@@ -5,7 +5,7 @@ const ContainerWrapper = styled.div`
   margin: 0 auto;
   width: 80%;
 
-  @media (max-width: 1440px) {
+  @media (max-width: 1280px) {
     width: 85%;
   }
 

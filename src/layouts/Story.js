@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 const defaultImage = "https://www.fintros.com/assets/how-it-works-anonymous-9410b457c2f2ee0bc77fe28c21aed3df6ddb647175c2dbd78fcbff4aa3c23145.png";
 
 export const ContentContainer = styled.div`
-  @media (max-width: 1440px) {
+  @media (max-width: 1280px) {
     margin-left: 0;
   }
 `;
@@ -16,7 +16,7 @@ export const Image = styled.div`
   width: 28.75rem;
 
 
-  @media (max-width: 1440px) {
+  @media (max-width: 1280px) {
     margin-bottom: 1.5rem;
     width: 100%;
   }

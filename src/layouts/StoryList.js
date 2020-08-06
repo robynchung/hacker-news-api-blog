@@ -11,7 +11,7 @@ export const StoryWrapper = styled.div`
     border-bottom: none;
   }
 
-  @media (max-width: 1440px) {
+  @media (max-width: 1280px) {
     grid-template-columns: 1fr;
     padding-left: 18.75%;
     padding-right: 18.75%;
