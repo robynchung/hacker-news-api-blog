@@ -1,19 +1,22 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import grabity from "grabity";
-import moment from "moment";
+import StoryList from "../components/StoryList";
+
+// design
 import Container from "../layouts/Container";
 import { numOfBlog } from "../constants";
 
 const Home = () => {
+  const observer = useRef();
   const [errorMessage, setErrorMessage] = useState("");
   const [totalStories, setTotalStoryList] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
-  const observer = useRef();
   const lastArticleRef = useCallback(
     node => {
       if (loading) return;
@@ -82,42 +85,27 @@ const Home = () => {
     return addedMetaDataList;
   };
 
-  const renderStories = () => {
-    return stories.map((story, index) => {
-      console.log(stories.length, index);
-      if (stories.length - 1 === index) {
-        return (
-          <div ref={lastArticleRef} key={index}>
-            ref --------------------------------------- type: {story.type}
-            <br />
-            title: {story.title}
-            <br />
-            date : {moment.unix(story.time).format()}
-            <br />
-            url: {story.metaData && typeof story.metaData === "object" ? story.url : story.metaData}
-            <br />
-          </div>
-        );
+  const onChange = value => {
+    setSearchText(value);
+    setLoading(true);
+    setStories([]);
+
+    const searchedStories = totalStories.filter(story => {
+      if (searchText && story["title"].includes(value)) {
+        return story;
       }
 
-      return (
-        <div key={index}>
-          type: {story.type}
-          <br />
-          title: {story.title}
-          <br />
-          date : {moment.unix(story.time).format()}
-          <br />
-          url: {story.metaData && typeof story.metaData === "object" ? story.url : story.metaData}
-          <br />
-        </div>
-      );
+      return null;
     });
+
+    setStories(searchedStories);
+    setLoading(false);
   };
 
   return (
     <Container>
-      <ul>{renderStories()}</ul>
+      <input onChange={event => onChange(event.target.value)} value={searchText} />
+      <StoryList stories={stories} lastArticleRef={lastArticleRef} />
       <h1>{loading && "spinnerLoading"}</h1>
 
       <div>{errorMessage ? errorMessage : null}</div>
