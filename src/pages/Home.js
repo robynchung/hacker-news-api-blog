@@ -46,7 +46,7 @@ const Home = () => {
     let stories = [];
 
     axios
-      .get("https://hacker-news.firebaseio.com/v0/topstories.json")
+      .get("https://hacker-news.firebaseio.com/v0/newstories.json")
       .then(response => response.data)
       .then(async data => {
         const maxNumberItem = pageNumber * numOfBlog;
@@ -63,7 +63,6 @@ const Home = () => {
         setStories(stories);
         setLoading(false);
       })
-
       .catch(error => setErrorMessage(error.message));
   }, [pageNumber]);
 
