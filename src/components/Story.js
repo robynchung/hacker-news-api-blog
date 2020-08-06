@@ -69,8 +69,6 @@ const TopicWrapper = styled.span`
 `;
 
 const Story = ({ story }) => {
-  console.log(story.metaData);
-
   return (
     <>
       <Image backgroundImage={story.metaData["og:image"] || story["twitter:image"]} />

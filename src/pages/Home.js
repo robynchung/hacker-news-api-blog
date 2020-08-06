@@ -3,6 +3,9 @@ import axios from "axios";
 import grabity from "grabity";
 import StoryList from "../components/StoryList";
 
+//component
+import Loading from "../components/Loading";
+
 // design
 import Container from "../layouts/Container";
 import { numOfBlog } from "../constants";
@@ -106,7 +109,7 @@ const Home = () => {
     <Container>
       <input onChange={event => onChange(event.target.value)} value={searchText} />
       <StoryList stories={stories} lastArticleRef={lastArticleRef} />
-      <h1>{loading && "spinnerLoading"}</h1>
+      <Loading loading={loading} />
 
       <div>{errorMessage ? errorMessage : null}</div>
     </Container>
