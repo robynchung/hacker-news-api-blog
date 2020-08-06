@@ -1,23 +1,43 @@
-import React, { Fragment, useState, useEffect, useRef } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import grabity from "grabity";
 import moment from "moment";
-
 import Container from "../layouts/Container";
-
 import { numOfBlog } from "../constants";
 
 const Home = () => {
-  const scrollRef = useRef();
   const [errorMessage, setErrorMessage] = useState("");
-  const [idList, setIdList] = useState([]);
+  const [totalStories, setTotalStoryList] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [stories, setStories] = useState([]);
-  const [spinnerLoading, setSpinnerLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+
+  const observer = useRef();
+  const lastArticleRef = useCallback(
+    node => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+
+      setHasMore(totalStories.length - stories.length * pageNumber > 0);
+
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPageNumber(prevPageNumber => prevPageNumber + 1);
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, totalStories.length, stories.length, pageNumber, hasMore]
+  );
 
   useEffect(() => {
-    setSpinnerLoading(true);
-    scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    setLoading(true);
+
+    let promiseList = [];
+    let storyList = [];
+    let stories = [];
 
     axios
       .get("https://hacker-news.firebaseio.com/v0/topstories.json")
@@ -26,19 +46,18 @@ const Home = () => {
         const maxNumberItem = pageNumber * numOfBlog;
 
         let initialData = [...data];
-        let promiseList = [];
-        let storyList = [];
 
-        initialData = initialData.splice(maxNumberItem - 30, maxNumberItem);
         promiseList = initialData.map(id => axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(response => response.data));
         storyList = await Promise.all(promiseList);
         storyList = await getMetaObjectByUrl(storyList);
         storyList = sortByDate(storyList);
 
-        setIdList(data);
-        setStories(storyList);
-        setSpinnerLoading(false);
+        stories = storyList.splice(0, maxNumberItem);
+        setTotalStoryList(storyList);
+        setStories(stories);
+        setLoading(false);
       })
+
       .catch(error => setErrorMessage(error.message));
   }, [pageNumber]);
 
@@ -64,9 +83,25 @@ const Home = () => {
   };
 
   const renderStories = () => {
-    return stories.map((story, key) => {
+    return stories.map((story, index) => {
+      console.log(stories.length, index);
+      if (stories.length - 1 === index) {
+        return (
+          <div ref={lastArticleRef} key={index}>
+            ref --------------------------------------- type: {story.type}
+            <br />
+            title: {story.title}
+            <br />
+            date : {moment.unix(story.time).format()}
+            <br />
+            url: {story.metaData && typeof story.metaData === "object" ? story.url : story.metaData}
+            <br />
+          </div>
+        );
+      }
+
       return (
-        <Fragment key={key}>
+        <div key={index}>
           type: {story.type}
           <br />
           title: {story.title}
@@ -75,22 +110,17 @@ const Home = () => {
           <br />
           url: {story.metaData && typeof story.metaData === "object" ? story.url : story.metaData}
           <br />
-        </Fragment>
+        </div>
       );
     });
   };
 
-  console.log(scrollRef);
-
   return (
     <Container>
       <ul>{renderStories()}</ul>
-      <h1>{spinnerLoading ? "spinnerLoading" : null}</h1>
-      <button onClick={() => setPageNumber(pageNumber > 0 ? pageNumber - 1 : 0)}>prev</button>
-      <button onClick={() => setPageNumber(pageNumber < idList.length ? pageNumber + 1 : idList.length)}>next</button>
+      <h1>{loading && "spinnerLoading"}</h1>
 
       <div>{errorMessage ? errorMessage : null}</div>
-      <div ref={scrollRef}>ref position</div>
     </Container>
   );
 };
