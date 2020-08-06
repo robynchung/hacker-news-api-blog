@@ -16,4 +16,9 @@ export default createGlobalStyle`
   body {
     background-color: #FBF8F5
   }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 `;

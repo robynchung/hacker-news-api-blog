@@ -11,7 +11,7 @@ const ContainerWrapper = styled.div`
 
   @media (max-width: 767px) {
     padding: 0 1.5rem;
-    width: calc(100% - 3rem);
+    width: 100%;
   }
 `;
 

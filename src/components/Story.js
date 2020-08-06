@@ -6,15 +6,30 @@ import styled from "styled-components";
 const defaultImage = "https://www.fintros.com/assets/how-it-works-anonymous-9410b457c2f2ee0bc77fe28c21aed3df6ddb647175c2dbd78fcbff4aa3c23145.png";
 
 const ContentContainer = styled.div`
-  margin-left: 4.16667%;
+  @media (max-width: 1440px) {
+    margin-left: 0;
+  }
 `;
 
 const Image = styled.div`
   background-image: url('${props => props.backgroundImage || defaultImage}');
+  background-position: center 25%;
   background-size: cover;
   color: #000;
   height: 28.75rem;
   width: 28.75rem;
+
+
+  @media (max-width: 1440px) {
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    height: 15.5rem;
+    padding: 0 1.5rem;
+    width: 100%;
+  }
 `;
 
 const ReadMore = styled.a`
@@ -54,14 +69,20 @@ const TopicWrapper = styled.span`
 `;
 
 const Story = ({ story }) => {
+  console.log(story.metaData);
+
   return (
     <>
-      <Image />
+      <Image backgroundImage={story.metaData["og:image"] || story["twitter:image"]} />
 
       <ContentContainer>
         <TopicWrapper>{story?.type}</TopicWrapper>
         <div>{moment.unix(story?.time).format("YYYY-MM-DD hh:mm")}</div>
-        <TitleWrapper>{story?.title}</TitleWrapper>
+        <TitleWrapper>
+          <a href={story?.url} target="_blank">
+            {story?.title}
+          </a>
+        </TitleWrapper>
 
         <div>
           <ReadMore href={story?.url} target="_blank">
