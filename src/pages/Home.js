@@ -104,7 +104,7 @@ const Home = () => {
     }
 
     const searchedStories = totalStories.filter(story => {
-      if (searchText && story["title"].includes(value)) {
+      if (searchText && story["title"].toLowerCase().includes(value.toLowerCase())) {
         return story;
       }
 
@@ -117,10 +117,9 @@ const Home = () => {
 
   return (
     <Container>
-      <input onChange={event => onChange(event.target.value)} value={searchText} />
+      {!loading ? <input onChange={event => onChange(event.target.value)} placeholder="Please search here" value={searchText} /> : null}
       <StoryList stories={stories} lastArticleRef={lastArticleRef} />
       <Loading loading={loading} />
-
       <div>{errorMessage ? errorMessage : null}</div>
     </Container>
   );
