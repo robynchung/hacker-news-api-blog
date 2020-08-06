@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 export const StoryWrapper = styled.div`
   border-bottom: #eee2d7 solid 2px;
