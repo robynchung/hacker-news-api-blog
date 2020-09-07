@@ -8,9 +8,13 @@ export default createGlobalStyle`
     font-family: Avenir;
   }
 
-  body, html, ul, li  {
+  body, html, ul, li {
     margin: 0;
     padding: 0;
+  }
+
+  html, body, #root {
+    height: 100%
   }
   
   body {

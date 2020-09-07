@@ -2,6 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 
 const ContainerWrapper = styled.div`
+  height: 100%;
   margin: 0 auto;
   width: 80%;
 
