@@ -8,8 +8,11 @@ import StoryList from "../components/StoryList";
 import Loading from "../components/Loading";
 
 // design
+// import Button from "../layouts/Button";
 import Container from "../layouts/Container";
-import { numOfBlog } from "../constants";
+import InputContainer from "../layouts/InputContainer";
+import Input from "../layouts/Input";
+import constants, { numOfBlog } from "../constants";
 
 const Home = () => {
   const observer = useRef();
@@ -117,7 +120,13 @@ const Home = () => {
 
   return (
     <Container>
-      {!loading ? <input onChange={event => onChange(event.target.value)} placeholder="Please search here" value={searchText} /> : null}
+      {!loading ? (
+        <InputContainer>
+          <Input onChange={event => onChange(event.target.value)} placeholder="Please search here" value={searchText} />
+          {/* <Button type={constants.inputType.submit}>Search</Button> */}
+        </InputContainer>
+      ) : null}
+
       <StoryList stories={stories} lastArticleRef={lastArticleRef} />
       <Loading loading={loading} />
       <div>{errorMessage ? errorMessage : null}</div>

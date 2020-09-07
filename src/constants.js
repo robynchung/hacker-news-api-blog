@@ -1,3 +1,6 @@
 module.exports = {
-  numOfBlog: 30
+  numOfBlog: 30,
+  inputType: {
+    submit: "submit"
+  }
 };

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-const defaultImage = "https://www.fintros.com/assets/how-it-works-anonymous-9410b457c2f2ee0bc77fe28c21aed3df6ddb647175c2dbd78fcbff4aa3c23145.png";
+const defaultImage = "https://secure.img1-fg.wfcdn.com/im/02238154/compr-r85/8470/84707680/pokemon-pikachu-wall-decal.jpg";
 
 export const ContentContainer = styled.div`
   @media (max-width: 1280px) {
@@ -8,13 +8,12 @@ export const ContentContainer = styled.div`
 `;
 
 export const Image = styled.div`
-  background-image: url('${props => props.backgroundImage || defaultImage}');
+  background-image: url("${props => props.backgroundImage || defaultImage}");
   background-position: center 25%;
   background-size: cover;
   color: #000;
   height: 28.75rem;
   width: 28.75rem;
-
 
   @media (max-width: 1280px) {
     margin-bottom: 1.5rem;
