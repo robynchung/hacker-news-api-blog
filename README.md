@@ -7,5 +7,6 @@
 - React Hook
 - Styled component
 - API fetch
-- Observerble to load data
+- Importing Metatag data
+- Observerble for infinite scroll
 
