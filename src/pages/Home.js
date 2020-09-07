@@ -11,7 +11,7 @@ import Loading from "../components/Loading";
 import Container from "../layouts/Container";
 import InputContainer from "../layouts/InputContainer";
 import Input from "../layouts/Input";
-import constants, { numOfBlog } from "../constants";
+import { numOfBlog } from "../constants";
 
 const Home = () => {
   const observer = useRef();
