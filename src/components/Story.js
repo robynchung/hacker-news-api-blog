@@ -12,7 +12,7 @@ const Story = ({ story }) => {
           <TopicWrapper>{story.type}</TopicWrapper>
           <div>{moment.unix(story.time).format("YYYY-MM-DD hh:mm")}</div>
           <TitleWrapper>
-            <a href={story.url || ""} target="_blank">
+            <a href={story.url || ""} rel="noopener noreferrer" target="_blank">
               {story.title}
             </a>
           </TitleWrapper>
