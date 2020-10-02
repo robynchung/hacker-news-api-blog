@@ -19,7 +19,7 @@ export default function useStory() {
 
     setStories(stories);
     setLoading(false);
-  });
+  }, []);
 
   const getMetaObjectByUrl = async storyList => {
     const addedMetaDataList = await Promise.all(
