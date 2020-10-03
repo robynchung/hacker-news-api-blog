@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import moment from "moment";
 
 import { ContentContainer, Image, ReadMore, TitleWrapper, TopicWrapper } from "../layouts/Story";
@@ -28,6 +29,10 @@ const Story = ({ story }) => {
   }
 
   return null;
+};
+
+Story.propTypes = {
+  story: PropTypes.object.isRequired
 };
 
 export default Story;

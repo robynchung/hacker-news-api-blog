@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { LoadingWrapper } from "../layouts/Loading";
 
 const Loading = ({ loading }) => {
@@ -10,6 +11,10 @@ const Loading = ({ loading }) => {
     );
 
   return null;
+};
+
+Loading.propTypes = {
+  loading: PropTypes.bool.isRequired
 };
 
 export default Loading;

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Story from "./Story";
 import { StoryWrapper } from "../layouts/StoryList";
 
@@ -22,6 +23,11 @@ const StoryList = ({ stories, lastArticleRef }) => {
   };
 
   return <ul>{renderStories()}</ul>;
+};
+
+StoryList.propTypes = {
+  lastArticleRef: PropTypes.func.isRequired,
+  stories: PropTypes.array.isRequired
 };
 
 export default StoryList;
